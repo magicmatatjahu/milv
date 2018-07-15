@@ -1,0 +1,8 @@
+white-list-external: ["localhost"]
+white-list-internal: ["localhost"]
+black-list: ["vendor"]
+files:
+  - path: "./README.md"
+    config:
+      white-list-external: ["localhost"]
+      white-list-internal: ["localhost"]
