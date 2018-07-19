@@ -3,6 +3,8 @@ WORKDIR /milv
 ENV SRC_DIR=/go/src/github.com/magicmatatjahu/milv/
 ADD . $SRC_DIR
 RUN go get gopkg.in/yaml.v2
+RUN go get github.com/olekukonko/tablewriter
+RUN go get github.com/pkg/errors
 RUN cd $SRC_DIR; CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .; cp main /milv/
 
 FROM golang:alpine

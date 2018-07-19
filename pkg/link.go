@@ -1,4 +1,4 @@
-package milv
+package pkg
 
 type LinkType string
 
@@ -8,14 +8,14 @@ const (
 	HashInternalLink LinkType = "HashInternalLink"
 )
 
-type LinkResult struct {
-	Status 		bool
-	Message 	string
-}
-
 type Link struct {
 	RelPath		string
 	AbsPath		string
 	TypeOf		LinkType
 	Result		LinkResult
+}
+
+type LinkResult struct {
+	Status 		bool
+	Message 	string
 }
