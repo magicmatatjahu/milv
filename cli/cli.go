@@ -1,4 +1,4 @@
-package milv_cli
+package cli
 
 import (
 	"flag"
@@ -9,27 +9,21 @@ import (
 )
 
 type Commands struct {
-	BasePath	string
-	ConfigFile	string
-	Files 		[]string
-	WhiteList 	[]string
-	BlackList	[]string
-	AllowRed	bool
-	AllowDup	bool
-	AllowSSL	bool
-	Timeout		int
+	BasePath		string
+	ConfigFile		string
+	Files 			[]string
+	WhiteListExt 	[]string
+	WhiteListInt 	[]string
+	BlackList		[]string
+	Docker			bool
 }
 
 func ParseCommands() Commands {
-	basePath := flag.String("basePath", "", "The root source directories used to search for files")
-	configFile := flag.String("configFile", "milv.config.yaml", "The root source directories used to search for files")
-	whiteList := flag.String("whiteList", "", "The root source directories used to search for files")
-	blackList := flag.String("blackList", "", "The root source directories used to search for files")
-	allowRed := flag.Bool("allowRed", false, "The root source directories used to search for files")
-	allowDup := flag.Bool("allowDup", false, "The root source directories used to search for files")
-	allowSSL := flag.Bool("allowSSL", false, "The root source directories used to search for files")
-	docker := flag.Bool("docker", false, "The root source directories used to search for files")
-	timeout := flag.Int("timeout", 5, "The timeout in seconds used when calling the URL")
+	basePath := flag.String("base-path", "", "The root source directories used to search for files")
+	configFile := flag.String("config-file", "milv.config.yaml", "The config file for bot")
+	whiteListExt := flag.String("white-list-ext", "", "The white list external links")
+	whiteListInt := flag.String("white-list-int", "", "The white list internal links")
+	blackList := flag.String("black-list", "", "The files black list")
 
 	flag.Parse()
 	files := flag.Args()
@@ -37,26 +31,24 @@ func ParseCommands() Commands {
 	if *basePath == "" {
 		out := runCmd("pwd | tr -d '\n'", true)
 		*basePath = string(out)
+	} else {
+		*configFile = fmt.Sprintf("%s/%s", *basePath, *configFile)
 	}
 	if len(files) == 0 {
 		out := runCmd("find . -name \"*.md\"", true)
 		files = strings.Split(string(out), "\n")
-	}
-
-	if *docker {
-		*configFile = fmt.Sprintf("%s/%s", "/milv/mds", *configFile)
+		if len(files) > 0 {
+			files = files[:len(files)-1]
+		}
 	}
 
 	return Commands{
 		BasePath: *basePath,
 		ConfigFile: *configFile,
 		Files: files,
-		WhiteList: strings.Split(*whiteList, ","),
+		WhiteListExt: strings.Split(*whiteListExt, ","),
+		WhiteListInt: strings.Split(*whiteListInt, ","),
 		BlackList: strings.Split(*blackList, ","),
-		AllowRed: *allowRed,
-		AllowDup: *allowDup,
-		AllowSSL: *allowSSL,
-		Timeout: *timeout,
 	}
 }
 

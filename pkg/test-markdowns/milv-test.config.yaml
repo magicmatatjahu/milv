@@ -1,0 +1,8 @@
+white-list-external: ["localhost", "abc.com"]
+white-list-internal: ["LICENSE"]
+black-list: ["./README.md"]
+files:
+  - path: "./src/foo.md"
+    config:
+      white-list-external: ["github.com"]
+      white-list-internal: ["#contributing"]
