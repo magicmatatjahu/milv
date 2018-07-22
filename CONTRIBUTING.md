@@ -16,4 +16,4 @@ When contributing to this repository, please first discuss the change you wish t
 
 ## License
 
-When you submit code changes, your submissions are understood to be under the same [MIT License](../LICENSE) that covers the project.
+When you submit code changes, your submissions are understood to be under the same [MIT License](LICENSE) that covers the project.

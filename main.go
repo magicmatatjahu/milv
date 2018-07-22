@@ -21,7 +21,7 @@ func main() {
 	if files.Summary() {
 		os.Exit(1)
 	} else {
-		fmt.Print("NO ISSUE :-)")
+		fmt.Print("NO ISSUES :-)")
 		os.Exit(0)
 	}
 }

@@ -28,10 +28,7 @@ func ParseCommands() Commands {
 	flag.Parse()
 	files := flag.Args()
 
-	if *basePath == "" {
-		out := runCmd("pwd | tr -d '\n'", true)
-		*basePath = string(out)
-	} else {
+	if *basePath != "" {
 		*configFile = fmt.Sprintf("%s/%s", *basePath, *configFile)
 	}
 	if len(files) == 0 {

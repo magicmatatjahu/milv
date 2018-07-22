@@ -61,7 +61,7 @@ milv ./README.md ./foo/bar.md
 If you do not want to install `milv` and it's dependencies you can simply use Docker and Docker image:
 
 ```bash
-docker run --rm -v $PWD:/milv/mds magicmatatjahu/milv:latest -base-path=./mds
+docker run --rm -v $PWD:/milv:ro magicmatatjahu/milv:stability -base-path=/milv
 ```
 
 ## Config file
@@ -121,7 +121,7 @@ To use `milv` with Jenkins, connect your repo and create a [`Jenkinsfile`](https
 ```groovy
 stage("validate internal & external links") {
     workDir = pwd()
-    sh "docker run --rm -v $workDir:/milv/mds magicmatatjahu/milv:latest -base-path=./mds"
+    sh "docker run --rm -v $workDir:/milv:ro magicmatatjahu/milv:stability -base-path=/milv"
 }
 ```
 

@@ -2,13 +2,8 @@ package pkg
 
 import (
 	"fmt"
-	"strings"
 	"github.com/olekukonko/tablewriter"
 	"os"
-)
-
-const (
-	dockerPrefix = "/milv/mds/"
 )
 
 type FileStats struct {
@@ -55,10 +50,10 @@ func NewFilesStats(files Files) FilesStats {
 }
 
 func writeStats(file *File) {
-	fmt.Printf("----- %s - status: %v\n", strings.TrimPrefix(file.AbsPath, dockerPrefix), file.Status)
+	fmt.Printf("----- %s - status: %v\n", file.RelPath, file.Status)
 	for _, link := range file.Links {
 		if link.TypeOf == ExternalLink {
-			fmt.Printf("- %s", strings.TrimPrefix(link.AbsPath, dockerPrefix))
+			fmt.Printf("- %s", link.AbsPath)
 		} else {
 			fmt.Printf("- %s", link.RelPath)
 		}
@@ -99,10 +94,6 @@ func summaryOfFile(file *File) {
 func summaryOfFiles(files Files) bool {
 	failed := false
 
-	fmt.Printf("#################################################\n")
-	fmt.Printf("#                     SUMMARY                    \n")
-	fmt.Printf("#################################################\n\n")
-
 	data := [][]string{}
 	for _, file := range files {
 		if len(file.Stats.FailedLinks.Links) > 0 {
@@ -110,12 +101,12 @@ func summaryOfFiles(files Files) bool {
 			for _, link := range file.Stats.FailedLinks.Links {
 				var path string
 				if link.TypeOf == ExternalLink {
-					path = strings.TrimPrefix(link.AbsPath, dockerPrefix)
+					path = link.AbsPath
 				} else {
 					path = link.RelPath
 				}
 				data = append(data, []string{
-					strings.TrimPrefix(file.RelPath, dockerPrefix),
+					file.RelPath,
 					path,
 					link.Result.Message,
 				})
@@ -123,12 +114,17 @@ func summaryOfFiles(files Files) bool {
 		}
 	}
 
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"File", "Link", "Description"})
-	table.SetAutoMergeCells(true)
-	table.SetRowLine(true)
-	table.AppendBulk(data)
-	table.Render()
+	if failed {
+		fmt.Printf("#################################################\n")
+		fmt.Printf("#                     SUMMARY                   #\n")
+		fmt.Printf("#################################################\n\n")
+		table := tablewriter.NewWriter(os.Stdout)
+		table.SetHeader([]string{"File", "Link", "Description"})
+		table.SetAutoMergeCells(true)
+		table.SetRowLine(true)
+		table.AppendBulk(data)
+		table.Render()
+	}
 
 	return failed
 }
