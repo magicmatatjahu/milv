@@ -2,12 +2,13 @@ package pkg
 
 import (
 	"net/http"
+	"net/url"
 	"regexp"
 	"strconv"
-	"net/url"
 )
 
-type Validation struct{}
+type Validation struct {
+}
 
 func (v *Validation) Links(links []Link, optionalHeaders ...Headers) []Link {
 	if len(links) == 0 {

@@ -38,6 +38,9 @@ You can use the following parameters while using `milv` binary:
 | `-white-list-ext` | comma separate external links which will not be checked | `[]`
 | `-white-list-int` | comma separate internal links which will not be checked  | `[]`
 | `-black-list` | comma separate files which will not be checked | `[]`
+| `-ignore-internal` | ignore internal links | `false`
+| `-ignore-external` | ignore external links | `false`
+| `-v` | enable verbose logging | `false`
 | `-help` or `-h` | Show available parameters | n/a
 
 Files to be checked are given as free parameters.

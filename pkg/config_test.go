@@ -2,9 +2,10 @@ package pkg
 
 import (
 	"testing"
-	"github.com/stretchr/testify/require"
-	"github.com/stretchr/testify/assert"
+
 	"github.com/magicmatatjahu/milv/cli"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestConfig(t *testing.T) {
@@ -25,7 +26,7 @@ func TestConfig(t *testing.T) {
 			},
 			WhiteListExt: []string{"localhost", "abc.com"},
 			WhiteListInt: []string{"LICENSE"},
-			BlackList: []string{"./README.md"},
+			BlackList:    []string{"./README.md"},
 		}
 
 		result, err := NewConfig(commands)

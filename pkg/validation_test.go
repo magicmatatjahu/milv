@@ -1,8 +1,9 @@
 package pkg
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestValidation(t *testing.T) {
@@ -10,36 +11,36 @@ func TestValidation(t *testing.T) {
 		links := []Link{
 			Link{
 				AbsPath: "https://twitter.com",
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 			},
 			Link{
 				AbsPath: "https://github.com",
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 			},
 			Link{
 				AbsPath: "http://dont.exist.link.com",
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 			},
 		}
 
 		expected := []Link{
 			Link{
 				AbsPath: "https://twitter.com",
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 				Result: LinkResult{
 					Status: true,
 				},
 			},
 			Link{
 				AbsPath: "https://github.com",
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 				Result: LinkResult{
 					Status: true,
 				},
 			},
 			Link{
 				AbsPath: "http://dont.exist.link.com",
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 				Result: LinkResult{
 					Status: false,
 				},
@@ -56,49 +57,49 @@ func TestValidation(t *testing.T) {
 		links := []Link{
 			Link{
 				AbsPath: "test-markdowns/external_links.md",
-				TypeOf: InternalLink,
+				TypeOf:  InternalLink,
 			},
 			Link{
 				AbsPath: "test-markdowns/sub_path/sub_sub_path/without_links.md",
-				TypeOf: InternalLink,
+				TypeOf:  InternalLink,
 			},
 			Link{
 				AbsPath: "test-markdowns/sub_path/absolute_path.md",
-				TypeOf: InternalLink,
+				TypeOf:  InternalLink,
 			},
 			Link{
 				AbsPath: "test-markdowns/sub_path/invalid.md",
-				TypeOf: InternalLink,
+				TypeOf:  InternalLink,
 			},
 		}
 
 		expected := []Link{
 			Link{
 				AbsPath: "test-markdowns/external_links.md",
-				TypeOf: InternalLink,
+				TypeOf:  InternalLink,
 				Result: LinkResult{
 					Status: true,
 				},
 			},
 			Link{
 				AbsPath: "test-markdowns/sub_path/sub_sub_path/without_links.md",
-				TypeOf: InternalLink,
+				TypeOf:  InternalLink,
 				Result: LinkResult{
 					Status: true,
 				},
 			},
 			Link{
 				AbsPath: "test-markdowns/sub_path/absolute_path.md",
-				TypeOf: InternalLink,
+				TypeOf:  InternalLink,
 				Result: LinkResult{
 					Status: true,
 				},
 			},
 			Link{
 				AbsPath: "test-markdowns/sub_path/invalid.md",
-				TypeOf: InternalLink,
+				TypeOf:  InternalLink,
 				Result: LinkResult{
-					Status: false,
+					Status:  false,
 					Message: "The specified file doesn't exist",
 				},
 			},
@@ -115,49 +116,49 @@ func TestValidation(t *testing.T) {
 		links := []Link{
 			Link{
 				RelPath: "#first-header",
-				TypeOf: HashInternalLink,
+				TypeOf:  HashInternalLink,
 			},
 			Link{
 				RelPath: "#second-header",
-				TypeOf: HashInternalLink,
+				TypeOf:  HashInternalLink,
 			},
 			Link{
 				RelPath: "#third-header",
-				TypeOf: HashInternalLink,
+				TypeOf:  HashInternalLink,
 			},
 			Link{
 				RelPath: "#header",
-				TypeOf: HashInternalLink,
+				TypeOf:  HashInternalLink,
 			},
 		}
 
 		expected := []Link{
 			Link{
 				RelPath: "#first-header",
-				TypeOf: HashInternalLink,
+				TypeOf:  HashInternalLink,
 				Result: LinkResult{
 					Status: true,
 				},
 			},
 			Link{
 				RelPath: "#second-header",
-				TypeOf: HashInternalLink,
+				TypeOf:  HashInternalLink,
 				Result: LinkResult{
 					Status: true,
 				},
 			},
 			Link{
 				RelPath: "#third-header",
-				TypeOf: HashInternalLink,
+				TypeOf:  HashInternalLink,
 				Result: LinkResult{
 					Status: true,
 				},
 			},
 			Link{
 				RelPath: "#header",
-				TypeOf: HashInternalLink,
+				TypeOf:  HashInternalLink,
 				Result: LinkResult{
-					Status: false,
+					Status:  false,
 					Message: "The specified header doesn't exist",
 				},
 			},

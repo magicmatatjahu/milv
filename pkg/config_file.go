@@ -1,8 +1,10 @@
 package pkg
 
 type FileConfig struct {
-	WhiteListExt	[]string	`yaml:"white-list-external"`
-	WhiteListInt	[]string	`yaml:"white-list-internal"`
+	WhiteListExt   []string `yaml:"white-list-external"`
+	WhiteListInt   []string `yaml:"white-list-internal"`
+	IgnoreExternal bool
+	IgnoreInternal bool
 }
 
 func NewFileConfig(filePath string, config *Config) *FileConfig {
@@ -15,7 +17,9 @@ func NewFileConfig(filePath string, config *Config) *FileConfig {
 		}
 	}
 	return &FileConfig{
-		WhiteListExt: config.WhiteListExt,
-		WhiteListInt: config.WhiteListInt,
+		WhiteListExt:   config.WhiteListExt,
+		WhiteListInt:   config.WhiteListInt,
+		IgnoreExternal: config.IgnoreExternal,
+		IgnoreInternal: config.IgnoreInternal,
 	}
 }

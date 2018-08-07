@@ -16,10 +16,12 @@ func NewFiles(filePaths []string, config *Config) (Files, error) {
 	return files, nil
 }
 
-func (f Files) Run() {
+func (f Files) Run(verbose bool) {
 	for _, file := range f {
 		file.Run()
-		file.WriteStats()
+		if verbose {
+			file.WriteStats()
+		}
 	}
 }
 

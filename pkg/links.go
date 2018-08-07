@@ -40,3 +40,14 @@ func (l Links) CheckStatus() bool {
 	}
 	return true
 }
+
+func (l Links) Filter(condition func(link Link) bool) Links {
+	result := l[:0]
+	for _, link := range l {
+		if condition(link) {
+			result = append(result, link)
+		}
+	}
+
+	return result
+}

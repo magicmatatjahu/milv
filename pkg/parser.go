@@ -1,22 +1,22 @@
 package pkg
 
 import (
-	"regexp"
 	"bufio"
-	"strings"
-	"path"
 	"fmt"
+	"path"
+	"regexp"
+	"strings"
 )
 
-type Parser struct {}
+type Parser struct{}
 
 type match func([][]string) string
 
 const (
-	linkPattern = `\[([^\]]*)\]\(([^)]*)\)`
+	linkPattern   = `\[([^\]]*)\]\(([^)]*)\)`
 	headerPattern = `^#{1,6}? (.*)`
-	httpsPattern = `^https?://`
-	hashPattern = `#(.*)`
+	httpsPattern  = `^https?://`
+	hashPattern   = `#(.*)`
 )
 
 func (p *Parser) Links(content, dirPath string) Links {
@@ -50,20 +50,20 @@ func (*Parser) getHeader(matches [][]string) string {
 	return matches[0][1]
 }
 
-func (*Parser) extractLinks(links []string, dirPath string) Links {
+func (p *Parser) extractLinks(links []string, dirPath string) Links {
 	var extractedLinks Links
 	for _, link := range links {
 		if match, _ := regexp.MatchString(httpsPattern, link); match {
 			extractedLinks = append(extractedLinks, Link{
 				RelPath: "",
 				AbsPath: link,
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 			})
 		} else if match, _ := regexp.MatchString(hashPattern, link); match {
 			extractedLinks = append(extractedLinks, Link{
 				RelPath: link,
 				AbsPath: "",
-				TypeOf: HashInternalLink,
+				TypeOf:  HashInternalLink,
 			})
 		} else {
 			var absPath string
@@ -75,7 +75,7 @@ func (*Parser) extractLinks(links []string, dirPath string) Links {
 			extractedLinks = append(extractedLinks, Link{
 				RelPath: link,
 				AbsPath: absPath,
-				TypeOf: InternalLink,
+				TypeOf:  InternalLink,
 			})
 		}
 	}

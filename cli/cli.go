@@ -2,20 +2,23 @@ package cli
 
 import (
 	"flag"
-	"strings"
-	"os/exec"
-	"log"
 	"fmt"
+	"log"
+	"os/exec"
+	"strings"
 )
 
 type Commands struct {
-	BasePath		string
-	ConfigFile		string
-	Files 			[]string
-	WhiteListExt 	[]string
-	WhiteListInt 	[]string
-	BlackList		[]string
-	Docker			bool
+	BasePath       string
+	ConfigFile     string
+	Files          []string
+	WhiteListExt   []string
+	WhiteListInt   []string
+	BlackList      []string
+	Docker         bool
+	IgnoreExternal bool
+	IgnoreInternal bool
+	Verbose        bool
 }
 
 func ParseCommands() Commands {
@@ -24,6 +27,9 @@ func ParseCommands() Commands {
 	whiteListExt := flag.String("white-list-ext", "", "The white list external links")
 	whiteListInt := flag.String("white-list-int", "", "The white list internal links")
 	blackList := flag.String("black-list", "", "The files black list")
+	verbose := flag.Bool("v", false, "Enable verbose logging")
+	ignoreInternal := flag.Bool("ignore-internal", false, "Ignore internal links")
+	ignoreExternal := flag.Bool("ignore-external", false, "Ignore external links")
 
 	flag.Parse()
 	files := flag.Args()
@@ -40,12 +46,15 @@ func ParseCommands() Commands {
 	}
 
 	return Commands{
-		BasePath: *basePath,
-		ConfigFile: *configFile,
-		Files: files,
-		WhiteListExt: strings.Split(*whiteListExt, ","),
-		WhiteListInt: strings.Split(*whiteListInt, ","),
-		BlackList: strings.Split(*blackList, ","),
+		BasePath:       *basePath,
+		ConfigFile:     *configFile,
+		Files:          files,
+		WhiteListExt:   strings.Split(*whiteListExt, ","),
+		WhiteListInt:   strings.Split(*whiteListInt, ","),
+		BlackList:      strings.Split(*blackList, ","),
+		IgnoreExternal: *ignoreExternal,
+		IgnoreInternal: *ignoreInternal,
+		Verbose:        *verbose,
 	}
 }
 

@@ -1,16 +1,19 @@
 package pkg
 
 import (
-	"github.com/magicmatatjahu/milv/cli"
 	"io/ioutil"
+
+	"github.com/magicmatatjahu/milv/cli"
 	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
-	Files			[]File		`yaml:"files"`
-	WhiteListExt	[]string	`yaml:"white-list-external"`
-	WhiteListInt	[]string	`yaml:"white-list-internal"`
-	BlackList		[]string	`yaml:"black-list"`
+	Files          []File   `yaml:"files"`
+	WhiteListExt   []string `yaml:"white-list-external"`
+	WhiteListInt   []string `yaml:"white-list-internal"`
+	BlackList      []string `yaml:"black-list"`
+	IgnoreInternal bool
+	IgnoreExternal bool
 }
 
 func NewConfig(commands cli.Commands) (*Config, error) {
@@ -36,9 +39,11 @@ func NewConfig(commands cli.Commands) (*Config, error) {
 
 func (c *Config) combine(commands cli.Commands) *Config {
 	return &Config{
-		Files: c.Files,
-		WhiteListExt: unique(append(c.WhiteListExt, commands.WhiteListExt...)),
-		WhiteListInt: unique(append(c.WhiteListInt, commands.WhiteListInt...)),
-		BlackList: unique(append(c.BlackList, commands.BlackList...)),
+		Files:          c.Files,
+		WhiteListExt:   unique(append(c.WhiteListExt, commands.WhiteListExt...)),
+		WhiteListInt:   unique(append(c.WhiteListInt, commands.WhiteListInt...)),
+		BlackList:      unique(append(c.BlackList, commands.BlackList...)),
+		IgnoreInternal: commands.IgnoreInternal,
+		IgnoreExternal: commands.IgnoreExternal,
 	}
 }
