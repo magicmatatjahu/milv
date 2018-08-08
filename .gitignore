@@ -53,3 +53,6 @@ tools/watch-pods/watch-pods-1.0.0
 
 # Binaries
 main
+
+# Vendor
+/vendor/

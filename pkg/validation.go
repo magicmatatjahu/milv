@@ -81,6 +81,7 @@ func (*Validation) externalLink(link Link) (Link, error) {
 	if err != nil {
 		return link, err
 	}
+	defer resp.Body.Close()
 
 	if match, _ := regexp.MatchString(`^2*`, strconv.Itoa(resp.StatusCode)); match {
 		link.Result.Status = true
@@ -88,7 +89,6 @@ func (*Validation) externalLink(link Link) (Link, error) {
 		link.Result.Status = false
 		link.Result.Message = resp.Status
 	}
-	resp.Body.Close()
 	return link, nil
 }
 

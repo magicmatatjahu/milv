@@ -11,6 +11,8 @@ const (
 type Link struct {
 	RelPath		string
 	AbsPath		string
+	Title		string
+	Desc		string
 	TypeOf		LinkType
 	Result		LinkResult
 }
