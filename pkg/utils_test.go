@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"testing"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,7 +39,7 @@ func TestUtils(t *testing.T) {
 		expected := []string{"abc.com", "github.com", "localhost"}
 		result := unique(elements)
 
-		assert.Equal(t, expected, result)
+		assert.ElementsMatch(t, expected, result)
 	})
 
 	t.Run("Remove Files From Black List", func(t *testing.T) {

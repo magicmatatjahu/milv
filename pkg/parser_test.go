@@ -2,8 +2,9 @@ package pkg
 
 import (
 	"testing"
-	"github.com/stretchr/testify/require"
+
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestParser(t *testing.T) {
@@ -15,15 +16,15 @@ func TestParser(t *testing.T) {
 		expected := Links{
 			Link{
 				AbsPath: "https://twitter.com",
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 			},
 			Link{
 				AbsPath: "https://github.com",
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 			},
 			Link{
 				AbsPath: "http://dont.exist.link.com",
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 			},
 		}
 
@@ -42,22 +43,22 @@ func TestParser(t *testing.T) {
 			Link{
 				AbsPath: "test-markdowns/external_links.md",
 				RelPath: "../external_links.md",
-				TypeOf: InternalLink,
+				TypeOf:  InternalLink,
 			},
 			Link{
 				AbsPath: "test-markdowns/sub_path/sub_sub_path/without_links.md",
 				RelPath: "sub_sub_path/without_links.md",
-				TypeOf: InternalLink,
+				TypeOf:  InternalLink,
 			},
 			Link{
 				AbsPath: "test-markdowns/sub_path/absolute_path.md",
 				RelPath: "absolute_path.md",
-				TypeOf: InternalLink,
+				TypeOf:  InternalLink,
 			},
 			Link{
 				AbsPath: "test-markdowns/sub_path/invalid.md",
 				RelPath: "invalid.md",
-				TypeOf: InternalLink,
+				TypeOf:  InternalLink,
 			},
 		}
 
@@ -75,19 +76,19 @@ func TestParser(t *testing.T) {
 		expected := Links{
 			Link{
 				RelPath: "#first-header",
-				TypeOf: HashInternalLink,
+				TypeOf:  HashInternalLink,
 			},
 			Link{
 				RelPath: "#second-header",
-				TypeOf: HashInternalLink,
+				TypeOf:  HashInternalLink,
 			},
 			Link{
 				RelPath: "#third-header",
-				TypeOf: HashInternalLink,
+				TypeOf:  HashInternalLink,
 			},
 			Link{
 				RelPath: "#header",
-				TypeOf: HashInternalLink,
+				TypeOf:  HashInternalLink,
 			},
 		}
 
@@ -123,7 +124,7 @@ func TestParser(t *testing.T) {
 			Link{
 				AbsPath: "test-markdowns/external_links.md",
 				RelPath: "/external_links.md",
-				TypeOf: InternalLink,
+				TypeOf:  InternalLink,
 			},
 		}
 

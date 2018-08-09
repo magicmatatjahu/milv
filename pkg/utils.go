@@ -1,10 +1,10 @@
 package pkg
 
 import (
-	"os"
-	"strings"
 	"io/ioutil"
+	"os"
 	"path/filepath"
+	"strings"
 )
 
 var (
