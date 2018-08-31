@@ -1,3 +1,4 @@
+black-list: ["/vendor/"]
 files:
   - path: "./pkg/test-markdowns/hash_internal_links.md"
     config:

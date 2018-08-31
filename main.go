@@ -1,27 +1,28 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/magicmatatjahu/milv/cli"
 	milv "github.com/magicmatatjahu/milv/pkg"
-	"os"
-	"fmt"
 )
 
 func main() {
 	cliCommands := cli.ParseCommands()
 	milv.SetBasePath(cliCommands.BasePath, false)
+	milv.SetTimeout(cliCommands.Timeout)
 
 	config, err := milv.NewConfig(cliCommands)
 	if err != nil {
 		panic(err)
 	}
 	files, _ := milv.NewFiles(cliCommands.Files, config)
-	files.Run()
+	files.Run(cliCommands.Verbose)
 
 	if files.Summary() {
 		os.Exit(1)
-	} else {
-		fmt.Print("NO ISSUES :-)")
-		os.Exit(0)
 	}
+
+	fmt.Println("NO ISSUES :-)")
 }

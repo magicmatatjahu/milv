@@ -4,10 +4,15 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"fmt"
 	"net/url"
+	"github.com/schollz/closestmatch"
+	"strings"
+	"time"
 )
 
-type Validation struct{}
+type Validation struct {
+}
 
 func (v *Validation) Links(links []Link, optionalHeaders ...Headers) []Link {
 	if len(links) == 0 {
@@ -71,24 +76,50 @@ func (*Validation) externalLink(link Link) (Link, error) {
 		return link, nil
 	}
 
+	var status bool
+	message := ""
+
+	url, _ := url.Parse(link.AbsPath)
+	absPath := fmt.Sprintf("%s://%s%s", url.Scheme, url.Host, url.Path)
+
 	client := &http.Client{}
-	url, err := url.ParseRequestURI(link.AbsPath)
+	if _TIMEOUT != 0 {
+		client.Timeout = time.Duration(int(time.Second) * _TIMEOUT)
+	}
+	resp, err := client.Get(absPath)
 	if err != nil {
 		return link, err
 	}
 
-	resp, err := client.Get(url.String())
-	if err != nil {
-		return link, err
-	}
+	if match, _ := regexp.MatchString(`^2[0-9][0-9]`, strconv.Itoa(resp.StatusCode)); match && resp != nil {
+		status = true
 
-	if match, _ := regexp.MatchString(`^2*`, strconv.Itoa(resp.StatusCode)); match {
-		link.Result.Status = true
+		if url.Fragment != "" {
+			parser := &Parser{}
+			anchors := parser.Anchors(resp.Body)
+
+			if contains(anchors, url.Fragment) {
+				status = true
+			} else {
+				cm := closestmatch.New(anchors, []int{4, 3, 5})
+				closestAnchor := cm.Closest(url.Fragment)
+
+				status = false
+				if closestAnchor != "" {
+					message = fmt.Sprintf("The specified anchor doesn't exist in website. Did you mean about #%s?", closestAnchor)
+				} else {
+					message = "The specified anchor doesn't exist"
+				}
+			}
+		}
 	} else {
-		link.Result.Status = false
-		link.Result.Message = resp.Status
+		status = false
+		message = resp.Status
 	}
 	resp.Body.Close()
+
+	link.Result.Status = status
+	link.Result.Message = message
 	return link, nil
 }
 
@@ -114,8 +145,17 @@ func (*Validation) hashInternalLink(link Link, headers Headers) (Link, error) {
 	if match := headerExists(link.RelPath, headers); match {
 		link.Result.Status = true
 	} else {
+		cm := closestmatch.New(headers, []int{4, 3, 5})
+		closestHeader := cm.Closest(link.RelPath)
+		closestHeader = strings.Replace(closestHeader, " ", "-", -1)
+		closestHeader = strings.ToLower(closestHeader)
+
 		link.Result.Status = false
-		link.Result.Message = "The specified header doesn't exist"
+		if closestHeader != "" {
+			link.Result.Message = fmt.Sprintf("The specified header doesn't exist in file. Did you mean about #%s?", closestHeader)
+		} else {
+			link.Result.Message = "The specified header doesn't exist in file"
+		}
 	}
 	return link, nil
 }

@@ -1,9 +1,10 @@
 package pkg
 
 import (
-	"github.com/stretchr/testify/require"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestStats(t *testing.T) {
@@ -17,14 +18,14 @@ func TestStats(t *testing.T) {
 				Links: []Link{
 					Link{
 						AbsPath: "https://twitter.com",
-						TypeOf: ExternalLink,
+						TypeOf:  ExternalLink,
 						Result: LinkResult{
 							Status: true,
 						},
 					},
 					Link{
 						AbsPath: "https://github.com",
-						TypeOf: ExternalLink,
+						TypeOf:  ExternalLink,
 						Result: LinkResult{
 							Status: true,
 						},
@@ -36,7 +37,7 @@ func TestStats(t *testing.T) {
 				Links: []Link{
 					Link{
 						AbsPath: "http://dont.exist.link.com",
-						TypeOf: ExternalLink,
+						TypeOf:  ExternalLink,
 						Result: LinkResult{
 							Status: false,
 						},
@@ -62,7 +63,7 @@ func TestStats(t *testing.T) {
 					Link{
 						AbsPath: "test-markdowns/external_links.md",
 						RelPath: "../external_links.md",
-						TypeOf: InternalLink,
+						TypeOf:  InternalLink,
 						Result: LinkResult{
 							Status: true,
 						},
@@ -70,7 +71,7 @@ func TestStats(t *testing.T) {
 					Link{
 						AbsPath: "test-markdowns/sub_path/sub_sub_path/without_links.md",
 						RelPath: "sub_sub_path/without_links.md",
-						TypeOf: InternalLink,
+						TypeOf:  InternalLink,
 						Result: LinkResult{
 							Status: true,
 						},
@@ -78,7 +79,7 @@ func TestStats(t *testing.T) {
 					Link{
 						AbsPath: "test-markdowns/sub_path/absolute_path.md",
 						RelPath: "absolute_path.md",
-						TypeOf: InternalLink,
+						TypeOf:  InternalLink,
 						Result: LinkResult{
 							Status: true,
 						},
@@ -91,9 +92,9 @@ func TestStats(t *testing.T) {
 					Link{
 						AbsPath: "test-markdowns/sub_path/invalid.md",
 						RelPath: "invalid.md",
-						TypeOf: InternalLink,
+						TypeOf:  InternalLink,
 						Result: LinkResult{
-							Status: false,
+							Status:  false,
 							Message: "The specified file doesn't exist",
 						},
 					},
@@ -113,25 +114,60 @@ func TestStats(t *testing.T) {
 
 		expected := &FileStats{
 			SuccessLinks: SuccessLinks{
-				Count: 3,
+				Count: 8,
 				Links: []Link{
 					Link{
+						AbsPath: "https://github.com",
+						TypeOf:  ExternalLink,
+						Result: LinkResult{
+							Status: true,
+						},
+					},
+					Link{
+						AbsPath: "https://github.com",
+						TypeOf:  ExternalLink,
+						Result: LinkResult{
+							Status: true,
+						},
+					},
+					Link{
 						RelPath: "#first-header",
-						TypeOf: HashInternalLink,
+						TypeOf:  HashInternalLink,
 						Result: LinkResult{
 							Status: true,
 						},
 					},
 					Link{
 						RelPath: "#second-header",
-						TypeOf: HashInternalLink,
+						TypeOf:  HashInternalLink,
 						Result: LinkResult{
 							Status: true,
 						},
 					},
 					Link{
 						RelPath: "#third-header",
-						TypeOf: HashInternalLink,
+						TypeOf:  HashInternalLink,
+						Result: LinkResult{
+							Status: true,
+						},
+					},
+					Link{
+						RelPath: "#header-with-block",
+						TypeOf:  HashInternalLink,
+						Result: LinkResult{
+							Status: true,
+						},
+					},
+					Link{
+						RelPath: "#header-with-link",
+						TypeOf:  HashInternalLink,
+						Result: LinkResult{
+							Status: true,
+						},
+					},
+					Link{
+						RelPath: "#very-strange-header-really-people-create-headers-look-like-this",
+						TypeOf:  HashInternalLink,
 						Result: LinkResult{
 							Status: true,
 						},
@@ -143,9 +179,9 @@ func TestStats(t *testing.T) {
 				Links: []Link{
 					Link{
 						RelPath: "#header",
-						TypeOf: HashInternalLink,
+						TypeOf:  HashInternalLink,
 						Result: LinkResult{
-							Status: false,
+							Status:  false,
 							Message: "The specified header doesn't exist",
 						},
 					},
@@ -170,7 +206,7 @@ func TestStats(t *testing.T) {
 					Link{
 						AbsPath: "test-markdowns/external_links.md",
 						RelPath: "/external_links.md",
-						TypeOf: InternalLink,
+						TypeOf:  InternalLink,
 						Result: LinkResult{
 							Status: true,
 						},

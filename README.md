@@ -38,6 +38,9 @@ You can use the following parameters while using `milv` binary:
 | `-white-list-ext` | comma separate external links which will not be checked | `[]`
 | `-white-list-int` | comma separate internal links which will not be checked  | `[]`
 | `-black-list` | comma separate files which will not be checked | `[]`
+| `-ignore-internal` | ignore internal links | `false`
+| `-ignore-external` | ignore external links | `false`
+| `-v` | enable verbose logging | `false`
 | `-help` or `-h` | Show available parameters | n/a
 
 Files to be checked are given as free parameters.
@@ -124,6 +127,11 @@ stage("validate internal & external links") {
     sh "docker run --rm -v $workDir:/milv:ro magicmatatjahu/milv:stability -base-path=/milv"
 }
 ```
+
+[lol](https://github.com/kyma-project/community/blob/master/CONTRIBUTING.md#agreements-and-licenses)
+[lol2](https://stackoverflow.com/questions/34160509/options-for-testing-service-workers-via-http/34161385#34161385)
+[lol3](https://graphql.org/learn/schema/#input-types)
+[lol4](https://github.com/openservicebrokerapi/servicebroker/blob/v2.13/spec.md#service-objects)
 
 ## Other validators
 

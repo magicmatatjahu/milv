@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"testing"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -24,15 +25,15 @@ func TestFile(t *testing.T) {
 		expected := Links{
 			Link{
 				AbsPath: "https://twitter.com",
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 			},
 			Link{
 				AbsPath: "https://github.com",
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 			},
 			Link{
 				AbsPath: "http://dont.exist.link.com",
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 			},
 		}
 
@@ -48,6 +49,9 @@ func TestFile(t *testing.T) {
 			"First Header",
 			"Second Header",
 			"Third Header",
+			"Header with link",
+			"Header with block",
+			"Very strange header really people create headers look like this",
 			"Links",
 		}
 
@@ -62,21 +66,21 @@ func TestFile(t *testing.T) {
 		expected := Links{
 			Link{
 				AbsPath: "https://twitter.com",
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 				Result: LinkResult{
 					Status: true,
 				},
 			},
 			Link{
 				AbsPath: "https://github.com",
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 				Result: LinkResult{
 					Status: true,
 				},
 			},
 			Link{
 				AbsPath: "http://dont.exist.link.com",
-				TypeOf: ExternalLink,
+				TypeOf:  ExternalLink,
 				Result: LinkResult{
 					Status: false,
 				},

@@ -2,23 +2,24 @@ package pkg
 
 import (
 	"fmt"
-	"github.com/olekukonko/tablewriter"
 	"os"
+
+	"github.com/olekukonko/tablewriter"
 )
 
 type FileStats struct {
-	SuccessLinks	SuccessLinks
-	FailedLinks		FailedLinks
+	SuccessLinks SuccessLinks
+	FailedLinks  FailedLinks
 }
 
 type SuccessLinks struct {
-	Count	int
-	Links	[]Link
+	Count int
+	Links []Link
 }
 
 type FailedLinks struct {
-	Count	int
-	Links	[]Link
+	Count int
+	Links []Link
 }
 
 type FilesStats []*FileStats

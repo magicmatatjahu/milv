@@ -1,14 +1,15 @@
 package pkg
 
 import (
-	"os"
-	"strings"
 	"io/ioutil"
+	"os"
 	"path/filepath"
+	"strings"
 )
 
 var (
 	_BASE_PATH string = ""
+	_TIMEOUT int = 0
 )
 
 const (
@@ -21,6 +22,10 @@ func SetBasePath(path string, absolute bool) {
 	} else {
 		_BASE_PATH = path
 	}
+}
+
+func SetTimeout(timeout int) {
+	_TIMEOUT = timeout
 }
 
 func fileExists(file string) error {
@@ -80,4 +85,13 @@ func readMarkdown(filePath string) (string, error) {
 		return "", err
 	}
 	return string(content), nil
+}
+
+func contains(slice []string, value string) bool {
+	for _, el := range slice {
+		if value == el {
+			return true
+		}
+	}
+	return false
 }

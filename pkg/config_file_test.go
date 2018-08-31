@@ -2,9 +2,10 @@ package pkg
 
 import (
 	"testing"
+
 	"github.com/magicmatatjahu/milv/cli"
-	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestConfigFile(t *testing.T) {
@@ -23,9 +24,10 @@ func TestConfigFile(t *testing.T) {
 		config, err := NewConfig(commands)
 		require.NoError(t, err)
 
-		result := NewFileConfig("test-markdowns/src/foo.md", config)
+		result := NewFileConfig("./src/foo.md", config)
 
 		require.NoError(t, err)
-		assert.Equal(t, expected, result)
+		assert.ElementsMatch(t, expected.WhiteListExt, result.WhiteListExt)
+		assert.ElementsMatch(t, expected.WhiteListInt, result.WhiteListInt)
 	})
 }
