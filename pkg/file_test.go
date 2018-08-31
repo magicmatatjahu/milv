@@ -8,18 +8,20 @@ import (
 )
 
 func TestFile(t *testing.T) {
+	var links Links
+
 	t.Run("File Exists", func(t *testing.T) {
-		_, err := NewFile("test-markdowns/external_links.md", &FileConfig{})
+		_, err := NewFile("test-markdowns/external_links.md", links, nil)
 		assert.NoError(t, err)
 	})
 
 	t.Run("File Not Exists", func(t *testing.T) {
-		_, err := NewFile("test-markdowns/not_exist_file.md", &FileConfig{})
+		_, err := NewFile("test-markdowns/not_exist_file.md", links, nil)
 		assert.Error(t, err, "The specified file isn't a markdown file")
 	})
 
 	t.Run("Extract Links", func(t *testing.T) {
-		file, err := NewFile("test-markdowns/external_links.md", &FileConfig{})
+		file, err := NewFile("test-markdowns/external_links.md", links, nil)
 		require.NoError(t, err)
 
 		expected := Links{
@@ -42,7 +44,7 @@ func TestFile(t *testing.T) {
 	})
 
 	t.Run("Extract Headers", func(t *testing.T) {
-		file, err := NewFile("test-markdowns/hash_internal_links.md", &FileConfig{})
+		file, err := NewFile("test-markdowns/hash_internal_links.md", links, nil)
 		require.NoError(t, err)
 
 		expected := Headers{
@@ -60,7 +62,7 @@ func TestFile(t *testing.T) {
 	})
 
 	t.Run("Validate Links", func(t *testing.T) {
-		file, err := NewFile("test-markdowns/external_links.md", &FileConfig{})
+		file, err := NewFile("test-markdowns/external_links.md", links, nil)
 		require.NoError(t, err)
 
 		expected := Links{
@@ -83,6 +85,7 @@ func TestFile(t *testing.T) {
 				TypeOf:  ExternalLink,
 				Result: LinkResult{
 					Status: false,
+					Message: "Get http://dont.exist.link.com: dial tcp: lookup dont.exist.link.com: no such host",
 				},
 			},
 		}

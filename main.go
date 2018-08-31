@@ -11,12 +11,12 @@ import (
 func main() {
 	cliCommands := cli.ParseCommands()
 	milv.SetBasePath(cliCommands.BasePath, false)
-	milv.SetTimeout(cliCommands.Timeout)
 
 	config, err := milv.NewConfig(cliCommands)
 	if err != nil {
 		panic(err)
 	}
+
 	files, _ := milv.NewFiles(cliCommands.Files, config)
 	files.Run(cliCommands.Verbose)
 

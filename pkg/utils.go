@@ -5,15 +5,15 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"regexp"
 )
 
 var (
 	_BASE_PATH string = ""
-	_TIMEOUT int = 0
 )
 
 const (
-	codeBlockPattern = `(\x60{3}?.+?\x60{3}?)`
+	codeBlockPattern = `(?m)^(.*\x60{3}).*\n(.*|\n)+?\n(.*\x60{3})$`
 )
 
 func SetBasePath(path string, absolute bool) {
@@ -22,10 +22,6 @@ func SetBasePath(path string, absolute bool) {
 	} else {
 		_BASE_PATH = path
 	}
-}
-
-func SetTimeout(timeout int) {
-	_TIMEOUT = timeout
 }
 
 func fileExists(file string) error {
@@ -85,6 +81,11 @@ func readMarkdown(filePath string) (string, error) {
 		return "", err
 	}
 	return string(content), nil
+}
+
+func removeCodeBlocks(markdown string) string {
+	re := regexp.MustCompile(codeBlockPattern)
+	return re.ReplaceAllString(markdown, "")
 }
 
 func contains(slice []string, value string) bool {

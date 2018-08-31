@@ -43,6 +43,7 @@ func TestValidation(t *testing.T) {
 				TypeOf:  ExternalLink,
 				Result: LinkResult{
 					Status: false,
+					Message: "Get http://dont.exist.link.com: dial tcp: lookup dont.exist.link.com: no such host",
 				},
 			},
 		}
@@ -180,7 +181,7 @@ func TestValidation(t *testing.T) {
 				TypeOf:  HashInternalLink,
 				Result: LinkResult{
 					Status:  false,
-					Message: "The specified header doesn't exist",
+					Message: "The specified header doesn't exist in file",
 				},
 			},
 			Link{

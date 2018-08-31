@@ -50,4 +50,13 @@ func TestUtils(t *testing.T) {
 
 		assert.Equal(t, expected, result)
 	})
+
+	t.Run("Remove Code Blocks", func(t *testing.T) {
+		filePaths, blackList := []string{"./abc.md", "./foo/bar.md"}, []string{"foo"}
+
+		expected := []string{"./abc.md"}
+		result := removeBlackList(filePaths, blackList)
+
+		assert.Equal(t, expected, result)
+	})
 }

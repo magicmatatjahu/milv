@@ -1,14 +1,6 @@
-black-list: ["/vendor/"]
+white-list-external: ["localhost"]
+black-list: ["/vendor/", "test-markdowns"]
 files:
-  - path: "./pkg/test-markdowns/hash_internal_links.md"
+  - path: "./README.md"
     config:
-      white-list-internal: ["#header"]
-  - path: "./pkg/test-markdowns/external_links.md"
-    config:
-      white-list-external: ["http://dont.exist.link.com"]
-  - path: "./pkg/test-markdowns/sub_path/internal_links.md"
-    config:
-      white-list-internal: ["invalid.md"]
-  - path: "./pkg/test-markdowns/sub_path/absolute_path.md"
-    config:
-      white-list-internal: ["/external_links.md"]
+      allow-code-blocks: true

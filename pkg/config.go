@@ -12,10 +12,12 @@ type Config struct {
 	WhiteListExt   []string `yaml:"white-list-external"`
 	WhiteListInt   []string `yaml:"white-list-internal"`
 	BlackList      []string `yaml:"black-list"`
-	Timeout 	   int `yaml:"timeout"`
-	ReguestTimes   int8 `yaml:"reguest-times"`
-	IgnoreInternal bool
-	IgnoreExternal bool
+	Timeout        int      `yaml:"timeout"`
+	ReguestRepeats int8     `yaml:"request-repeats"`
+	AllowRedirect  bool		`yaml:"allow-redirect"`
+	AllowCodeBlocks bool 	`yaml:"allow-code-blocks"`
+	IgnoreExternal bool     `yaml:"ignore-external"`
+	IgnoreInternal bool     `yaml:"ignore-internal"`
 }
 
 func NewConfig(commands cli.Commands) (*Config, error) {
@@ -41,17 +43,39 @@ func NewConfig(commands cli.Commands) (*Config, error) {
 
 func (c *Config) combine(commands cli.Commands) *Config {
 	var timeout int
-	if commands.Timeout != 0 {
+	if commands.FlagsSet["timeout"] {
 		timeout = commands.Timeout
 	} else {
 		timeout = c.Timeout
 	}
 
-	var reguestTimes int8
-	if commands.Timeout != 0 {
-		reguestTimes = commands.ReguestTimes
+	var requestRepeats int8
+	if commands.FlagsSet["request-repeats"] {
+		requestRepeats = commands.ReguestRepeats
 	} else {
-		reguestTimes = c.ReguestTimes
+		requestRepeats = c.ReguestRepeats
+	}
+
+	var allowRedirect, allowCodeBlocks, ignoreExternal, ignoreInternal bool
+	if commands.FlagsSet["allow-redirect"] {
+		allowRedirect = commands.AllowRedirect
+	} else {
+		allowRedirect = c.AllowRedirect
+	}
+	if commands.FlagsSet["allow-code-blocks"] {
+		allowCodeBlocks = commands.AllowCodeBlocks
+	} else {
+		allowCodeBlocks = c.AllowCodeBlocks
+	}
+	if commands.FlagsSet["ignore-external"] {
+		ignoreExternal = commands.IgnoreExternal
+	} else {
+		ignoreExternal = c.IgnoreExternal
+	}
+	if commands.FlagsSet["ignore-internal"] {
+		ignoreInternal = commands.IgnoreInternal
+	} else {
+		ignoreInternal = c.IgnoreInternal
 	}
 
 	return &Config{
@@ -59,9 +83,11 @@ func (c *Config) combine(commands cli.Commands) *Config {
 		WhiteListExt:   unique(append(c.WhiteListExt, commands.WhiteListExt...)),
 		WhiteListInt:   unique(append(c.WhiteListInt, commands.WhiteListInt...)),
 		BlackList:      unique(append(c.BlackList, commands.BlackList...)),
-		Timeout: 		timeout,
-		ReguestTimes:   reguestTimes,
-		IgnoreInternal: commands.IgnoreInternal,
-		IgnoreExternal: commands.IgnoreExternal,
+		Timeout:        timeout,
+		ReguestRepeats: requestRepeats,
+		AllowRedirect:  allowRedirect,
+		AllowCodeBlocks: allowCodeBlocks,
+		IgnoreExternal: ignoreExternal,
+		IgnoreInternal: ignoreInternal,
 	}
 }

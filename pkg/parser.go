@@ -3,12 +3,12 @@ package pkg
 import (
 	"bufio"
 	"fmt"
+	"golang.org/x/net/html"
+	"io"
+	"log"
 	"path"
 	"regexp"
 	"strings"
-	"log"
-	"golang.org/x/net/html"
-	"io"
 )
 
 type Parser struct{}
@@ -16,14 +16,14 @@ type Parser struct{}
 type match func([][]string) string
 
 const (
-	linkPattern   = `\[([^\]]*)\]\(([^)]*)\)`
+	linkPattern   = `\[([^\]]*)\]\(([^)]*)\)|\bhttps?://\S*\b`
 	headerPattern = `^#{1,6}? (.*)`
 	httpsPattern  = `^https?://`
 	hashPattern   = `#(.*)`
 )
 
-func (p *Parser) Links(content, dirPath string) Links {
-	return p.extractLinks(p.parse(content, linkPattern, p.getLink), dirPath)
+func (p *Parser) Links(markdown, dirPath string) Links {
+	return p.extractLinks(p.parse(markdown, linkPattern, p.getLink), dirPath)
 }
 
 func (p *Parser) Headers(markdown string) []string {
@@ -66,9 +66,12 @@ func (*Parser) parse(markdown, pattern string, match match) []string {
 }
 
 func (*Parser) getLink(matches [][]string) string {
-	return strings.Split(matches[0][2], " ")[0]
+	substring := strings.Split(matches[0][2], " ")[0]
+	if substring == "" {
+		return matches[0][0]
+	}
+	return substring
 }
-
 
 func (p *Parser) getHeader(matches [][]string) string {
 	header := matches[0][1]

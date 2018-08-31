@@ -38,8 +38,12 @@ You can use the following parameters while using `milv` binary:
 | `-white-list-ext` | comma separate external links which will not be checked | `[]`
 | `-white-list-int` | comma separate internal links which will not be checked  | `[]`
 | `-black-list` | comma separate files which will not be checked | `[]`
-| `-ignore-internal` | ignore internal links | `false`
+| `-allow-redirect` | redirects will be allowed | `false`
+| `-request-repeats` | number of request repeats | `1`
+| `-allow-code-blocks` | checking links in code blocks | `false`
+| `-timeout` | connection timeout (in seconds) | `30`
 | `-ignore-external` | ignore external links | `false`
+| `-ignore-internal` | ignore internal links | `false`
 | `-v` | enable verbose logging | `false`
 | `-help` or `-h` | Show available parameters | n/a
 
@@ -113,6 +117,56 @@ Similarly will be with `white-list-internal`.
 
 If you have a config file and you use a `CLI`, then `milv` will automatically combine the parameters from file and consol.
 
+#### Advanced configuration
+
+> **NOTE**: For this example tree of project is the same as above.
+
+Config file can look like this:
+
+```yaml
+white-list-external: ["localhost", "abc.com"]
+white-list-internal: ["LICENSE"]
+black-list: ["./README.md"]
+request-repeats: 5
+timeout: 45
+allow-redirect: false
+allow-code-blocks: true
+files:
+  - path: "./src/foo.md"
+    config:
+      white-list-external: ["google.com"]
+      white-list-internal: ["#contributing"]
+      request-repeats: 3
+      timeout: 30
+      allow-code-blocks: false
+    links:
+      - path: "https://github.com/magicmatatjahu/milv"
+        config:
+          timeout: 15
+          allow-redirect: true
+```
+
+In this example we can see that `milv` will globally check external links with 45 seconds timeout, also won't allow redirect and will allow checking links in code snippets and default times of request repeats is set 5.
+
+`Milv` also allows to separately configurate files. Timeout in `./src/foo.md` file will be set to 30 seconds, links will be checking 3 times (if they will return error) and the links in code blocks won't be checked. However, a single link `https://github.com/magicmatatjahu/milv` will be checking with 15 seconds timeout with the possibility of redirection.
+
+## Troubleshooting links
+
+The below table describes the types of errors during checking links and examples of how to solve them:
+
+| Error        | Solution example   |
+|-------------|----------------|
+| `404 Not Found` | Page doesn't exist - you have to change the external link to the correct one |
+| Error with formatting link | Correct link or if link has a variables or it is a example, add this link to the `white-list-external` or `white-list-internal` |
+| `The specified file doesn't exist` | Change the relative path to the file to the correct one or use a absolute path (second solution is not recommended) |
+| `The specified header doesn't exist in file` | Change the anchor link in `.md` file to the correct one. Sometimes `milv` give a hint (`Did you mean about <similar header>?`) of which header (existing in the file) is very similar to the given. |
+| `The specified anchor doesn't exist...` or `The specified anchor doesn't exist in website...` | Check which anchors are on the external website and correct the specified anchor or remove the redirection to the given anchor. Sometimes `milv` give a hint (`Did you mean about <similar anchor>?`) of which anchor (existing in the website) is very similar to the given. |
+| `Get <external link>: net/http: request canceled (Client.Timeout exceeded while awaiting headers)` | Increase net timeout to the all files, specific file or specific link or increase times of request repeats ([Here's](#advanced-configuration) how to do it) |
+| `Get <external link>: EOF ` | Same as above or change the link to the other one (probably website doesn't exist) |
+| Other types of errors and errors with contains `no such host` or `timeout` words | Most likely, the website doesn't exist or you do not have access to it. Possible solutions: change the link to another, correct one, remove it or add it to the `white-list-external` or `white-list-internal` |
+
+It is a good practice to add local or internal (in the local network) links to the global white list of external or internal links, such as `http://localhost`.
+
 ## Validate Pull Requests
 
 `milv` can help you validate links in all `.md` files in whole repository when a pull request is created (or a commit is pushed).
@@ -124,14 +178,9 @@ To use `milv` with Jenkins, connect your repo and create a [`Jenkinsfile`](https
 ```groovy
 stage("validate internal & external links") {
     workDir = pwd()
-    sh "docker run --rm -v $workDir:/milv:ro magicmatatjahu/milv:stability -base-path=/milv"
+    sh "docker run --rm -v $workDir:/milv:ro magicmatatjahu/milv:0.0.4 -base-path=/milv"
 }
 ```
-
-[lol](https://github.com/kyma-project/community/blob/master/CONTRIBUTING.md#agreements-and-licenses)
-[lol2](https://stackoverflow.com/questions/34160509/options-for-testing-service-workers-via-http/34161385#34161385)
-[lol3](https://graphql.org/learn/schema/#input-types)
-[lol4](https://github.com/openservicebrokerapi/servicebroker/blob/v2.13/spec.md#service-objects)
 
 ## Other validators
 
@@ -154,7 +203,10 @@ This project is available under the MIT license. See the [LICENSE](LICENSE) file
 
 ## ToDo
 
+* [ ] error handling 
+* [ ] refactor (new architecture)
+* [ ] documentations
 * [ ] possibility to validation remote repositories hosted on **GitHub**
 * [ ] parse other type of files
-* [ ] add more commands like a: timeout for http.Get(), allow redirects or SSL
+* [x] add more commands like a: timeout for http.Get(), allow redirects or SSL
 * [ ] landing page for project

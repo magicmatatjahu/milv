@@ -7,7 +7,7 @@ func NewFiles(filePaths []string, config *Config) (Files, error) {
 
 	filePaths = removeBlackList(filePaths, config.BlackList)
 	for _, filePath := range filePaths {
-		file, err := NewFile(filePath, NewFileConfig(filePath, config))
+		file, err := NewFile(filePath, NewLinks(filePath, config), NewFileConfig(filePath, config))
 		if err != nil {
 			return Files{}, err
 		}

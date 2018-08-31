@@ -1,12 +1,12 @@
 package pkg
 
 import (
+	"fmt"
+	"github.com/schollz/closestmatch"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strconv"
-	"fmt"
-	"net/url"
-	"github.com/schollz/closestmatch"
 	"strings"
 	"time"
 )
@@ -79,44 +79,74 @@ func (*Validation) externalLink(link Link) (Link, error) {
 	var status bool
 	message := ""
 
-	url, _ := url.Parse(link.AbsPath)
+	url, err := url.Parse(link.AbsPath)
+	if err != nil {
+		link.Result.Status = false
+		link.Result.Message = err.Error()
+		return link, err
+	}
 	absPath := fmt.Sprintf("%s://%s%s", url.Scheme, url.Host, url.Path)
 
 	client := &http.Client{}
-	if _TIMEOUT != 0 {
-		client.Timeout = time.Duration(int(time.Second) * _TIMEOUT)
-	}
-	resp, err := client.Get(absPath)
-	if err != nil {
-		return link, err
+	if link.Config != nil && link.Config.Timeout != nil && *link.Config.Timeout != 0 {
+		client.Timeout = time.Duration(int(time.Second) * (*link.Config.Timeout))
+	} else {
+		client.Timeout = time.Duration(int(time.Second) * 30)
 	}
 
-	if match, _ := regexp.MatchString(`^2[0-9][0-9]`, strconv.Itoa(resp.StatusCode)); match && resp != nil {
-		status = true
+	requestRepeats := int8(1)
+	if link.Config != nil && link.Config.ReguestRepeats != nil && *link.Config.ReguestRepeats > 0 {
+		requestRepeats = *link.Config.ReguestRepeats
+	}
 
-		if url.Fragment != "" {
-			parser := &Parser{}
-			anchors := parser.Anchors(resp.Body)
+	for i := int8(0); i < requestRepeats; i++ {
+		resp, err := client.Get(absPath)
+		if err != nil {
+			status = false
+			message = err.Error()
+			continue
+		}
 
-			if contains(anchors, url.Fragment) {
-				status = true
-			} else {
-				cm := closestmatch.New(anchors, []int{4, 3, 5})
-				closestAnchor := cm.Closest(url.Fragment)
+		allowRedirect := false
+		if link.Config != nil && link.Config.AllowRedirect != nil {
+			allowRedirect = *link.Config.AllowRedirect
+		}
 
-				status = false
-				if closestAnchor != "" {
-					message = fmt.Sprintf("The specified anchor doesn't exist in website. Did you mean about #%s?", closestAnchor)
+		statusCode, regexpPattern := strconv.Itoa(resp.StatusCode), `^2[0-9][0-9]`
+		if allowRedirect {
+			regexpPattern = `^2[0-9][0-9]|^3[0-9][0-9]`
+		}
+
+		if match, _ := regexp.MatchString(regexpPattern, statusCode); match && resp != nil {
+			status = true
+
+			if !allowRedirect && url.Fragment != "" {
+				parser := &Parser{}
+				anchors := parser.Anchors(resp.Body)
+
+				if contains(anchors, url.Fragment) {
+					status = true
 				} else {
-					message = "The specified anchor doesn't exist"
+					cm := closestmatch.New(anchors, []int{4, 3, 5})
+					closestAnchor := cm.Closest(url.Fragment)
+
+					status = false
+					if closestAnchor != "" {
+						message = fmt.Sprintf("The specified anchor doesn't exist in website. Did you mean about #%s?", closestAnchor)
+					} else {
+						message = "The specified anchor doesn't exist"
+					}
 				}
 			}
+
+			resp.Body.Close()
+			break
+		} else {
+			status = false
+			message = resp.Status
+			resp.Body.Close()
 		}
-	} else {
-		status = false
-		message = resp.Status
 	}
-	resp.Body.Close()
 
 	link.Result.Status = status
 	link.Result.Message = message

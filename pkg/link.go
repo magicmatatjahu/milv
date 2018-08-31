@@ -9,10 +9,9 @@ const (
 )
 
 type Link struct {
-	RelPath string
+	RelPath string `yaml:"path"`
 	AbsPath string
-	Timeout int8
-	ReguestTimes int8
+	Config  *LinkConfig `yaml:"config"`
 	TypeOf  LinkType
 	Result  LinkResult
 }

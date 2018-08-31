@@ -8,8 +8,10 @@ import (
 )
 
 func TestStats(t *testing.T) {
+	var links Links
+
 	t.Run("External Links", func(t *testing.T) {
-		file, err := NewFile("test-markdowns/external_links.md", &FileConfig{})
+		file, err := NewFile("test-markdowns/external_links.md", links, nil)
 		require.NoError(t, err)
 
 		expected := &FileStats{
@@ -40,6 +42,7 @@ func TestStats(t *testing.T) {
 						TypeOf:  ExternalLink,
 						Result: LinkResult{
 							Status: false,
+							Message: "Get http://dont.exist.link.com: dial tcp: lookup dont.exist.link.com: no such host",
 						},
 					},
 				},
@@ -53,7 +56,7 @@ func TestStats(t *testing.T) {
 	})
 
 	t.Run("Internal Links", func(t *testing.T) {
-		file, err := NewFile("test-markdowns/sub_path/internal_links.md", &FileConfig{})
+		file, err := NewFile("test-markdowns/sub_path/internal_links.md", links, nil)
 		require.NoError(t, err)
 
 		expected := &FileStats{
@@ -109,7 +112,7 @@ func TestStats(t *testing.T) {
 	})
 
 	t.Run("Hash Internal Links", func(t *testing.T) {
-		file, err := NewFile("test-markdowns/hash_internal_links.md", &FileConfig{})
+		file, err := NewFile("test-markdowns/hash_internal_links.md", links, nil)
 		require.NoError(t, err)
 
 		expected := &FileStats{
@@ -182,7 +185,7 @@ func TestStats(t *testing.T) {
 						TypeOf:  HashInternalLink,
 						Result: LinkResult{
 							Status:  false,
-							Message: "The specified header doesn't exist",
+							Message: "The specified header doesn't exist in file",
 						},
 					},
 				},
@@ -196,7 +199,7 @@ func TestStats(t *testing.T) {
 	})
 
 	t.Run("Absolute Internal Path", func(t *testing.T) {
-		file, err := NewFile("test-markdowns/sub_path/absolute_path.md", &FileConfig{})
+		file, err := NewFile("test-markdowns/sub_path/absolute_path.md", links, nil)
 		require.NoError(t, err)
 
 		expected := &FileStats{

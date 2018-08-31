@@ -15,11 +15,14 @@ type Commands struct {
 	WhiteListExt   []string
 	WhiteListInt   []string
 	BlackList      []string
-	Timeout		   int
-	ReguestTimes   int8
+	Timeout        int
+	ReguestRepeats int8
+	AllowRedirect bool
+	AllowCodeBlocks bool
 	IgnoreExternal bool
 	IgnoreInternal bool
 	Verbose        bool
+	FlagsSet       map[string]bool
 }
 
 func ParseCommands() Commands {
@@ -29,13 +32,20 @@ func ParseCommands() Commands {
 	whiteListInt := flag.String("white-list-int", "", "The white list internal links")
 	blackList := flag.String("black-list", "", "The files black list")
 	timeout := flag.Int("timeout", 0, "Timeout for http.get reguest")
-	reguestTimes := flag.Int("reguest-times", 0, "Times reguest failuring links")
+	requestRepeats := flag.Int("request-repeats", 0, "Times reguest failuring links")
+	allowRedirect := flag.Bool("allow-redirect", false, "Allow redirect")
+	allowCodeBlocks := flag.Bool("allow-code-blocks", false, "Allow links in code blocks to check")
 	ignoreInternal := flag.Bool("ignore-internal", false, "Ignore internal links")
 	ignoreExternal := flag.Bool("ignore-external", false, "Ignore external links")
 	verbose := flag.Bool("v", false, "Enable verbose logging")
 
 	flag.Parse()
 	files := flag.Args()
+
+	flagset := make(map[string]bool)
+	flag.Visit(func(f *flag.Flag) {
+		flagset[f.Name] = true
+	})
 
 	if *basePath != "" {
 		*configFile = fmt.Sprintf("%s/%s", *basePath, *configFile)
@@ -55,11 +65,14 @@ func ParseCommands() Commands {
 		WhiteListExt:   strings.Split(*whiteListExt, ","),
 		WhiteListInt:   strings.Split(*whiteListInt, ","),
 		BlackList:      strings.Split(*blackList, ","),
-		Timeout:		*timeout,
-		ReguestTimes:   int8(*reguestTimes),
+		Timeout:        *timeout,
+		ReguestRepeats: int8(*requestRepeats),
+		AllowRedirect:  *allowRedirect,
+		AllowCodeBlocks: *allowCodeBlocks,
 		IgnoreExternal: *ignoreExternal,
 		IgnoreInternal: *ignoreInternal,
 		Verbose:        *verbose,
+		FlagsSet:       flagset,
 	}
 }
 

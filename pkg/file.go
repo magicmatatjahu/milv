@@ -23,7 +23,7 @@ type File struct {
 	valid   *Validation
 }
 
-func NewFile(filePath string, config *FileConfig) (*File, error) {
+func NewFile(filePath string, fileLinks Links, config *FileConfig) (*File, error) {
 	if match, _ := regexp.MatchString(`.md$`, filePath); !match {
 		return nil, errors.New("The specified file isn't a markdown file")
 	}
@@ -42,6 +42,7 @@ func NewFile(filePath string, config *FileConfig) (*File, error) {
 		AbsPath: absPath,
 		DirPath: filepath.Dir(filePath),
 		Content: content,
+		Links:   fileLinks,
 		Config:  config,
 		parser:  &Parser{},
 		valid:   &Validation{},
@@ -49,46 +50,64 @@ func NewFile(filePath string, config *FileConfig) (*File, error) {
 }
 
 func (f *File) Run() {
-	f.ExtractLinks()
-	f.ExtractHeaders()
-	f.ValidateLinks()
-	f.ExtractStats()
+	f.ExtractLinks().
+		ExtractHeaders().
+		ValidateLinks().
+		ExtractStats()
 }
 
-func (f *File) ExtractLinks() {
+func (f *File) ExtractLinks() *File {
+	whiteListExt, whiteListInt := []string{}, []string{}
+	if f.Config != nil {
+		whiteListExt = f.Config.WhiteListExt
+		whiteListInt = f.Config.WhiteListInt
+	}
+
+	content := f.Content
+	if f.Config != nil && !*f.Config.AllowCodeBlocks {
+		content = removeCodeBlocks(content)
+	}
+
 	f.Links = f.parser.
-		Links(f.Content, f.DirPath).
-		RemoveWhiteLinks(f.Config.WhiteListExt, f.Config.WhiteListInt).
+		Links(content, f.DirPath).
+		AppendConfig(f).
+		RemoveWhiteLinks(whiteListExt, whiteListInt).
 		Filter(func(link Link) bool {
-			if f.Config.IgnoreInternal && (link.TypeOf == HashInternalLink || link.TypeOf == InternalLink) {
+			if f.Config != nil && f.Config.IgnoreInternal != nil && *f.Config.IgnoreInternal && (link.TypeOf == HashInternalLink || link.TypeOf == InternalLink) {
 				return false
 			}
 
-			if f.Config.IgnoreExternal && link.TypeOf == ExternalLink {
+			if f.Config != nil && f.Config.IgnoreExternal != nil && *f.Config.IgnoreExternal && link.TypeOf == ExternalLink {
 				return false
 			}
 
 			return true
 		})
+	return f
 }
 
-func (f *File) ExtractHeaders() {
+func (f *File) ExtractHeaders() *File {
 	f.Headers = f.parser.Headers(f.Content)
+	return f
 }
 
-func (f *File) ValidateLinks() {
+func (f *File) ValidateLinks() *File {
 	f.Links = f.valid.Links(f.Links, f.Headers)
 	f.Status = f.Links.CheckStatus()
+	return f
 }
 
-func (f *File) ExtractStats() {
+func (f *File) ExtractStats() *File {
 	f.Stats = NewFileStats(f)
+	return f
 }
 
-func (f *File) WriteStats() {
+func (f *File) WriteStats() *File {
 	writeStats(f)
+	return f
 }
 
-func (f *File) Summary() {
+func (f *File) Summary() *File {
 	summaryOfFile(f)
+	return f
 }

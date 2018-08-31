@@ -37,5 +37,3 @@ Link to header with block - [link](#header-with-block)
 Link to header with link - [link](#header-with-link)
 
 Link to very strange header - [link](#very-strange-header-really-people-create-headers-look-like-this)
-
-[golang](https://golang.org/pkg/strings/#Replece)
