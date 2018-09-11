@@ -121,6 +121,11 @@ func (*Validation) externalLink(link Link) (Link, error) {
 			status = true
 
 			if !allowRedirect && url.Fragment != "" {
+				match, _ = regexp.MatchString(`[a-zA-Z]`, string(url.Fragment[0]))
+				if !match {
+					break
+				}
+
 				parser := &Parser{}
 				anchors := parser.Anchors(resp.Body)
 
