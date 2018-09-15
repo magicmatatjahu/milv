@@ -2,6 +2,12 @@
 
 Changes made by Maciej Urbańczyk `magicmatatjahu` (unless otherwise noted).
 
+## 0.0.6
+* Handling headers in relative links (changes suggested by [@derberg](https://github.com/derberg) - [issue](https://github.com/magicmatatjahu/milv/issues/6)):
+
+## 0.0.5
+* Improve handling headers in external links
+
 ## 0.0.4
 
 * Add new features to configurate `milv` (changes suggested by [@derberg](https://github.com/derberg) - [issue](https://github.com/magicmatatjahu/milv/issues/5)):

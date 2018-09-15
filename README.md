@@ -178,7 +178,7 @@ To use `milv` with Jenkins, connect your repo and create a [`Jenkinsfile`](https
 ```groovy
 stage("validate internal & external links") {
     workDir = pwd()
-    sh "docker run --rm -v $workDir:/milv:ro magicmatatjahu/milv:0.0.4 -base-path=/milv"
+    sh "docker run --rm --dns=8.8.8.8 --dns=8.8.4.4 -v $workDir:/milv:ro magicmatatjahu/milv:0.0.6 -base-path=/milv"
 }
 ```
 
