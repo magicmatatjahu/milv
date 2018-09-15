@@ -19,7 +19,7 @@ const (
 	linkPattern   = `\[([^\]]*)\]\(([^)]*)\)|\bhttps?://\S*\b`
 	headerPattern = `^#{1,6}? (.*)`
 	httpsPattern  = `^https?://`
-	hashPattern   = `#(.*)`
+	hashPattern   = `^#(.*)`
 )
 
 func (p *Parser) Links(markdown, dirPath string) Links {

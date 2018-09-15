@@ -72,6 +72,14 @@ func TestValidation(t *testing.T) {
 				AbsPath: "test-markdowns/sub_path/invalid.md",
 				TypeOf:  InternalLink,
 			},
+			Link{
+				AbsPath: "test-markdowns/external_links.md#first-header",
+				TypeOf:  InternalLink,
+			},
+			Link{
+				AbsPath: "test-markdowns/external_links.md#unknown-header",
+				TypeOf:  InternalLink,
+			},
 		}
 
 		expected := []Link{
@@ -102,6 +110,21 @@ func TestValidation(t *testing.T) {
 				Result: LinkResult{
 					Status:  false,
 					Message: "The specified file doesn't exist",
+				},
+			},
+			Link{
+				AbsPath: "test-markdowns/external_links.md#first-header",
+				TypeOf:  InternalLink,
+				Result: LinkResult{
+					Status:  true,
+				},
+			},
+			Link{
+				AbsPath: "test-markdowns/external_links.md#unknown-header",
+				TypeOf:  InternalLink,
+				Result: LinkResult{
+					Status:  false,
+					Message: "The specified header doesn't exist in file",
 				},
 			},
 		}

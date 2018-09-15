@@ -158,13 +158,22 @@ func (*Validation) externalLink(link Link) (Link, error) {
 	return link, nil
 }
 
-func (*Validation) internalLink(link Link) (Link, error) {
+func (v *Validation) internalLink(link Link) (Link, error) {
 	if link.TypeOf != InternalLink {
 		return link, nil
 	}
 
-	if err := fileExists(link.AbsPath); err == nil {
+	splitted := strings.Split(link.AbsPath, "#")
+
+	if err := fileExists(splitted[0]); err == nil {
 		link.Result.Status = true
+
+		if len(splitted) == 2 {
+			if !v.isHashInFile(splitted[0], splitted[1]) {
+				link.Result.Status = false
+				link.Result.Message = "The specified header doesn't exist in file"
+			}
+		}
 	} else {
 		link.Result.Status = false
 		link.Result.Message = "The specified file doesn't exist"
@@ -186,11 +195,22 @@ func (*Validation) hashInternalLink(link Link, headers Headers) (Link, error) {
 		closestHeader = strings.ToLower(closestHeader)
 
 		link.Result.Status = false
-		if closestHeader != "" {
-			link.Result.Message = fmt.Sprintf("The specified header doesn't exist in file. Did you mean about #%s?", closestHeader)
-		} else {
-			link.Result.Message = "The specified header doesn't exist in file"
-		}
+		link.Result.Message = "The specified header doesn't exist in file"
+		//if closestHeader != "" {
+		//	link.Result.Message = fmt.Sprintf("The specified header doesn't exist in file. Did you mean about #%s?", closestHeader)
+		//} else {
+		//	link.Result.Message = "The specified header doesn't exist in file"
+		//}
 	}
 	return link, nil
+}
+
+func (*Validation) isHashInFile(file, header string) bool {
+	markdown, err := readMarkdown(file)
+	if err != nil {
+		return false
+	}
+
+	parser := Parser{}
+	return headerExists(header, parser.Headers(markdown))
 }
