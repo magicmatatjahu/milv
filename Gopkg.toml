@@ -1,3 +1,8 @@
+required = [
+    "golang.org/x/tools/cmd/goimports",
+    "github.com/kisielk/errcheck",
+]
+
 [[constraint]]
   branch = "master"
   name = "github.com/olekukonko/tablewriter"
@@ -13,6 +18,10 @@
 [[constraint]]
   name = "gopkg.in/yaml.v2"
   version = "2.2.1"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/docopt/docopt-go"
 
 [prune]
   non-go = true
